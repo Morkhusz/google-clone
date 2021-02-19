@@ -3,7 +3,7 @@ version: "3.3"
 services:
   php:
     image: uotz/php7.4-nginx
-    container_name: vivex-php
+    container_name: google-php
     restart: unless-stopped
     ports:
       - "8000:8080"
@@ -21,29 +21,17 @@ services:
 
   mysql:
     image: mysql:5.7
-    container_name: vivex-database
+    container_name: google-database
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: "always-beta"
-      MYSQL_USER: "always-beta"
+      MYSQL_DATABASE: "google"
+      MYSQL_USER: "google"
       MYSQL_PASSWORD: "secret"
       MYSQL_ROOT_PASSWORD: "secret"
     ports:
       - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-    networks:
-      - app-network
-
-  redis:
-    image: redis:alpine
-    container_name: vivex-redis
-    restart: unless-stopped
-    command: "redis-server"
-    volumes:
-      - redis-data:/data
-    ports:
-      - 8002:6379
     networks:
       - app-network
 
@@ -104,8 +92,6 @@ networks:
 
 volumes:
   mysql-data:
-    driver: local
-  redis-data:
     driver: local
   mongo-data:
     driver: local
