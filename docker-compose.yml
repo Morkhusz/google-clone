@@ -12,10 +12,8 @@ services:
       - ./.docker/nginx/default.conf:/etc/nginx/sites-available/default
     links:
       - mysql
-      - redis
     depends_on:
       - mysql
-      - redis
     networks:
       - app-network
 
