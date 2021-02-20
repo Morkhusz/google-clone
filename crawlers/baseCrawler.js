@@ -1,26 +1,49 @@
 const puppeteer = require('puppeteer');
 
+const knex = require('knex')({
+    client: 'mysql2',
+    connection: {
+        port: 3307,
+        host: '0.0.0.0',
+        user: 'root',
+        password: 'secret',
+        database: 'google'
+    }
+});
+
 (async () => {
+    const { Client } = require('@elastic/elasticsearch')
+    const client = new Client({ node: 'http://localhost:9200' })
+    const urls = await knex.select('url').from('urls');
+
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
     });
     const page = await browser.newPage();
-    await page.goto('https://www.letras.mus.br/playlists/124186/');
 
-    const bodyHandle = await page.$('body');
-    const html = await page.evaluate(body => body.innerHTML, bodyHandle);
+    for (url of urls) {
+        try {
+            await page.goto(url.url);
+            const title = await page.$eval('h1', h1 => h1.textContent);
+            const content = await page.$eval('body', body => body.innerHTML);
 
-    const header = await page.$('h1');
-    const title = await page.evaluate(title => title.textContent, header);
+            client.index({
+                index: 'sites',
+                body: {
+                    content,
+                    title,
+                    url: url.url
+                }
+            }, (err, res, status) => {
+                console.log(res);
+            })
 
-    const response = {
-        content: html,
-        title
+            await page.waitForTimeout(3000);
+        } catch (e) {
+
+        }
     }
 
     await browser.close();
 
-    return JSON.stringify(response);
 })();
-
-
