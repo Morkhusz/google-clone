@@ -3,12 +3,12 @@ version: "3.3"
 services:
   node:
     container_name: google-node
-    image: node:14-buster
+    build: .
     user: 1000:1000
-    working_dir: '/usr/share'
     volumes:
-      - '.:/usr/share'
-      
+      - '.:/home/app'
+    networks:
+      - app-network
   front:
     container_name: google-front
     image: uotz/vuejs
