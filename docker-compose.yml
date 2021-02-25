@@ -3,6 +3,14 @@ version: "3.3"
 services:
   node:
     container_name: google-node
+    build: .
+    user: 1000:1000
+    volumes:
+      - '.:/home/app'
+    networks:
+      - app-network
+  front:
+    container_name: google-front
     image: uotz/vuejs
     volumes:
       - './front:/home/app'

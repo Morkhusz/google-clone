@@ -8,5 +8,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.11.0",
+    "cheerio": "^1.0.0-rc.5",
+    "knex": "^0.21.17",
+    "mysql2": "^2.2.5",
+    "puppeteer": "^7.1.0"
+  }
 }
