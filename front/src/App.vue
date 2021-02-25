@@ -1,60 +1,39 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <HelloWorld/>
-    </v-main>
+    <v-card color="white" flat>
+      <v-toolbar height="fit-content" color="white" class="py-10">
+        <v-toolbar-title>
+          <v-img width="120" :src="require('./assets/googlelogo.png')"></v-img>
+        </v-toolbar-title>
+        <v-autocomplete
+          rounded
+          v-model="search"
+          :items="items"
+          class="mx-4"
+          clearable
+          clear-icon
+          hide-no-data
+          hide-details
+          label="Start Searching"
+          solo
+        ></v-autocomplete>
+      </v-toolbar>
+    </v-card>
+    <v-main> </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
-
 export default {
-  name: 'App',
+  name: "App",
 
-  components: {
-    HelloWorld,
-  },
-
+  components: {},
+  
   data: () => ({
-    //
+    search: "",
+    items: [],
   }),
 };
 </script>
+<style scoped>
+</style>
