@@ -3,8 +3,8 @@ const puppeteer = require('puppeteer');
 const knex = require('knex')({
     client: 'mysql2',
     connection: {
-        port: 3307,
-        host: '0.0.0.0',
+        port: 3306,
+        host: 'mysql',
         user: 'root',
         password: 'secret',
         database: 'google'
@@ -14,11 +14,15 @@ const knex = require('knex')({
 (async () => {
     const browser = await puppeteer.launch({
         headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-gpu",
+        ]
     });
     const page = await browser.newPage();
     await page.goto('https://www.letras.mus.br/playlists/124186/');
 
-    const site = await page.url();
+    const site = await page.$eval('body', () => window.location.host);
     const hrefs = await page.$$eval('a', a => a.map(href => href.href));
 
     for (href of hrefs) {
@@ -32,6 +36,6 @@ const knex = require('knex')({
 
     await browser.close();
 
+    process.exit(1);
 })();
-
 

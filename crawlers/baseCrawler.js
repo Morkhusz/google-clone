@@ -3,8 +3,8 @@ const puppeteer = require('puppeteer');
 const knex = require('knex')({
     client: 'mysql2',
     connection: {
-        port: 3307,
-        host: '0.0.0.0',
+        port: 3306,
+        host: 'mysql',
         user: 'root',
         password: 'secret',
         database: 'google'
@@ -17,7 +17,11 @@ const knex = require('knex')({
     const urls = await knex.select('url').from('urls');
 
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-gpu",
+        ]
     });
     const page = await browser.newPage();
 
