@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
 
 const knex = require('knex')({
     client: 'mysql2',
@@ -13,7 +14,7 @@ const knex = require('knex')({
 
 (async () => {
     const { Client } = require('@elastic/elasticsearch')
-    const client = new Client({ node: 'http://localhost:9200' })
+    const client = new Client({ node: 'http://elasticsearch:9200' })
     const urls = await knex.select('url').from('urls');
 
     const browser = await puppeteer.launch({
@@ -29,7 +30,30 @@ const knex = require('knex')({
         try {
             await page.goto(url.url);
             const title = await page.$eval('h1', h1 => h1.textContent);
-            const content = await page.$eval('body', body => body.innerHTML);
+            let content = await page.$eval('body', body => body.innerHTML);
+            const $ = cheerio.load(content);
+            
+            if ($('script').length) {
+                $('script').remove();
+                console.log('removeu script')
+            }
+
+            if ($('footer').length) {
+                $('footer').remove();
+                console.log('removeu footer')
+            }
+
+            if ($('iframe').length) {
+                $('iframe').remove();
+                console.log('removeu iframes')
+            }
+
+            if ($('form').length) {
+                $('form').remove();
+                console.log('removeu forms')
+            }
+            
+            content = $.html();
 
             client.index({
                 index: 'sites',
@@ -39,12 +63,19 @@ const knex = require('knex')({
                     url: url.url
                 }
             }, (err, res, status) => {
-                console.log(res);
+                if (res) {
+                    console.log(res.body.result);
+                }
+                if(err) {
+                    console.log({
+                        error: err
+                    })
+                }
             })
 
             await page.waitForTimeout(3000);
         } catch (e) {
-
+            console.log(e)
         }
     }
 
