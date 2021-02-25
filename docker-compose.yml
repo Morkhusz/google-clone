@@ -1,21 +1,29 @@
 version: "3.3"
 
 services:
+  node:
+    container_name: google-node
+    image: uotz/vuejs
+    volumes:
+      - './front:/home/app'
+    ports:
+      - '8080:8080'
+    networks:
+      - app-network
+
   php:
     image: uotz/php7.4-nginx
     container_name: google-php
     restart: unless-stopped
     ports:
-      - "8000:8080"
+      - "80:8080"
     volumes:
-      - .:/home/app
+      - ./back:/home/app
       - ./.docker/nginx/default.conf:/etc/nginx/sites-available/default
     links:
       - mysql
-      - redis
     depends_on:
       - mysql
-      - redis
     networks:
       - app-network
 
@@ -29,21 +37,9 @@ services:
       MYSQL_PASSWORD: "secret"
       MYSQL_ROOT_PASSWORD: "secret"
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-    networks:
-      - app-network
-
-  mongo:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: Uotz123
-    volumes:
-      - mongo-data:/data/db
-    ports:
-      - 27017:27017
     networks:
       - app-network
 
@@ -88,12 +84,11 @@ services:
 
 networks:
   app-network:
+    name: google-network
     driver: bridge
 
 volumes:
   mysql-data:
-    driver: local
-  mongo-data:
     driver: local
   esdata:
     driver: local
