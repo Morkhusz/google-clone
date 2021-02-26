@@ -1,0 +1,12 @@
+{
+    "name": "root/app",
+    "type": "project",
+    "require": {
+        "elasticsearch/elasticsearch": "^7.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Uotz\\": "src/"
+        }
+    }
+}
